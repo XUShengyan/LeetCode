@@ -30,12 +30,36 @@ class Solution:
     def maxProfit(self, prices: list) -> int:
         if prices:
             # dynamic programming
-            localMin, localMaxProfit, sb, ss = float('inf'), 0, float('inf'), 0
+            first_buy, first_profit, second_buy, final_profit = float('inf'), 0, float('inf'), 0
             for curPrice in prices:
-                localMin = min(localMin, curPrice)  # keep minimal
-                localMaxProfit = max(localMaxProfit, curPrice - localMin)  # maximum if one transaction
-                sb = min(sb, curPrice - localMaxProfit)  # total drop volume level
-                ss = max(ss, curPrice - sb)  # maximum if sum of two transactions
-            return ss
+                first_buy = min(first_buy, curPrice)  # keep minimal
+                first_profit = max(first_profit, curPrice - first_buy)  # maximum if one transaction
+                '''
+                    two transaction
+                    1: first time, 2 : second time  
+                    profit =  2sell - 2buy + 1sell -1buy
+                    profit =  2sell -(2buy - 1sell + 1buy)
+                    profit =  2sell - (2buy - (1sell - 1buy))
+                    profit =  2sell - (2buy - 1profit)
+                    To get Max profit
+                    (2buy - 1profit) should be min
+                '''
+                second_buy = min(second_buy, curPrice - first_profit)  # total drop volume level
+                final_profit = max(final_profit, curPrice - second_buy)  # maximum if sum of two transactions
+            return final_profit
         else:
             return 0
+
+test = Solution()
+test_data = [3,3,5,0,0,3,1,4]
+print(test.maxProfit(test_data),'\n')
+
+test_data = [7,3,1,3,7]
+print(test.maxProfit(test_data),'\n')
+
+
+test_data = [1,2,3,4,5]
+print(test.maxProfit(test_data),'\n')
+
+test_data = [7,6,4,3,1]
+print(test.maxProfit(test_data),'\n')
